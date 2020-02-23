@@ -24,7 +24,9 @@ setuptools.setup(
     				'games/limitholdem/card2index.json',
     				'games/leducholdem/card2index.json',
     				'games/doudizhu/jsondata/*',
-				'games/uno/jsondata/*'
+				'games/uno/jsondata/*',
+                'games/hearts/card2index.json',
+                'games/hearts/jsondata/*'
 	]},
     install_requires=[
         'tensorflow>=1.14,<2.0',

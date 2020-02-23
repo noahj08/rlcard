@@ -16,7 +16,7 @@ class HeartsRound(object):
         self.dealer = dealer
         self.current_player = first_player_id
         self.num_players = num_players
-        self.target_suit = 'S'
+        self.target_suit = 'C'
         self.played_cards = [] # Cards played so far in trick
         self.is_over = False
         self.hearts_broken = False
@@ -42,18 +42,24 @@ class HeartsRound(object):
         card = player.hand.pop(remove_index)
         self.played_cards.append(card)
 
-        if len(self.played_cards) == 1: # Set target suit
+        if len(self.played_cards) == 1:  # Set target suit
             self.target_suit = suit
 
         if len(self.played_cards) == 4:
+            last_player_in_round = self.current_player
             # Figure out who to give the cards to
             max_value = 2
             max_player = 0
-            for idx,card in enumerate(self.played_cards):
-                if self.values[card.rank] > max_value:
+            for idx, card in enumerate(self.played_cards):
+                # NOTE: since played cards array isn't in the same order as players
+                # we need to rotate indexes to locate correct player ID.
+                player_id = (last_player_in_round + 1 + idx) % self.num_players
+                if self.values[card.rank] > max_value and card.suit == self.target_suit:
                     max_value = self.values[card.rank]
-                    max_player = idx
+                    max_player = player_id
+
             players[max_player].collected.extend(self.played_cards)
+
             if not player.hand: # Check if over
                 self.is_over = True
 
@@ -68,8 +74,8 @@ class HeartsRound(object):
 
     def get_legal_actions(self, players, player_id):
         legal_actions = []
-        if players[player_id].has_2_of_spades():
-            return ["S2"]
+        if players[player_id].has_2_of_clubs():
+            return ["C2"]
         hand = players[player_id].hand
         if len(self.played_cards) == 0: # Going first
             if self.hearts_broken:

@@ -3,6 +3,7 @@ from copy import deepcopy
 from rlcard.games.blackjack.dealer import BlackjackDealer as Dealer
 from rlcard.games.blackjack.player import BlackjackPlayer as Player
 from rlcard.games.blackjack.judger import BlackjackJudger as Judger
+import random
 
 class BlackjackGame(object):
 
@@ -148,27 +149,27 @@ class BlackjackGame(object):
 
 
 ##########################################################
-#    # For testing
-#    def _start_game(self):
-#        while True:
-#            self.init_game()
-#            player = self.player.get_player_id()
-#            #state = self.get_state(player)
-#            action = ['hit', 'stand']
-#            while not self.is_over():
-#                act = random.choice(action)
-#                print("Status(Player, Dealer): ",(self.player.status, self.dealer.status))
-#                print("Score(Player, Dealer): ",(self.player.score, self.dealer.score))
-#                print("Player_action:",act)
-#                next_state, next_player = self.step(act)
-#
-#            print("Status(Player, Dealer): ",(self.player.status, self.dealer.status))
-#            print("Score(Player, Dealer): ",(self.player.score, self.dealer.score))
-#            print(self.winner)
-#            if self.dealer.score < 17 and self.winner['dealer'] == 1 and self.winner['player'] == 0:
-#                print(next_state)
-#                break
-#
-#if __name__ == "__main__":
-#    game = BlackjackGame()
-#    game._start_game()
+    # For testing
+    def _start_game(self):
+        while True:
+            self.init_game()
+            player = self.player.get_player_id()
+            #state = self.get_state(player)
+            action = ['hit', 'stand']
+            while not self.is_over():
+                act = random.choice(action)
+                print("Status(Player, Dealer): ",(self.player.status, self.dealer.status))
+                print("Score(Player, Dealer): ",(self.player.score, self.dealer.score))
+                print("Player_action:",act)
+                next_state, next_player = self.step(act)
+
+            print("Status(Player, Dealer): ",(self.player.status, self.dealer.status))
+            print("Score(Player, Dealer): ",(self.player.score, self.dealer.score))
+            print(self.winner)
+            if self.dealer.score < 17 and self.winner['dealer'] == 1 and self.winner['player'] == 0:
+                print(next_state)
+                break
+
+if __name__ == "__main__":
+    game = BlackjackGame()
+    game._start_game()

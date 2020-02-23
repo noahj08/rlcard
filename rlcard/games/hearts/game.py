@@ -65,6 +65,7 @@ class HeartsGame(object):
             self.history.append((his_dealer, his_players, his_round))
 
         self.round.proceed_round(self.players, action)
+
         player_id = self.round.current_player
         state = self.get_state(player_id)
         return state, player_id
