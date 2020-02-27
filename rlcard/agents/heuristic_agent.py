@@ -16,8 +16,7 @@ class HeuristicAgent(object):
         self.id2card = dict([(val, key) for key,val in self.card2id.items()])
         self.values = {'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'T':10,'J':11,'Q':12,'K':13,'A':14}
 
-    @staticmethod
-    def step(state):
+    def step(self,state):
         ''' Predict the action given the curent state in gerenerating training data.
 
         Args:
@@ -26,7 +25,28 @@ class HeuristicAgent(object):
         Returns:
             action (int): the action predicted (randomly chosen) by the random agent
         '''
-        print(state)
+        legal_actions = [self.id2card[ID] for ID in state['legal_actions']]
+        is_last = (len(state['played_cards']) == 3)
+        is_first = (len(state['played_cards']) == 0)
+        has_target = (legal_actions[0][0] == state['target'])
+        has_QS = ('SQ' in legal_actions)
+        smallest_card_idx = np.argmin([self.values[card[1]] for card in legal_actions])
+        largest_card_idx = np.argmax([self.values[card[1]] for card in legal_actions])
+        largest_heart_idx = np.argmax([self.values[card[1]] if card[0] == 'H' else 0 for card in legal_actions])
+        if is_first:
+            return self.card2id[legal_actions[smallest_card_idx]]
+        else:
+            if not has_target:
+                if has_QS:
+                    return self.card2id['SQ']
+                if not largest_heart_idx == 0 or legal_actions[0][0] == 'H':
+                    return self.card2id[legal_actions[largest_heart_idx]]
+                else:
+                    return self.card2id[legal_actions[largest_card_idx]]
+            elif is_last:
+                return self.card2id[legal_actions[largest_card_idx]]
+            else:
+                return self.card2id[legal_actions[smallest_card_idx]]
         return np.random.choice(state['legal_actions'])
 
     def eval_step(self, state):
