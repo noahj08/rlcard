@@ -24,4 +24,20 @@ class HeartsDealer(object):
             i += 1
             if i > len(players)-1:
                 i = 0
+
+
+class HeartsMiniDealer(HeartsDealer):
+    def __init__(self):
+        super().__init__()
+        # restricted_deck = ['A', 'K', 'Q', '2']
+        restricted_deck = ['Q', '2']
+
+        if restricted_deck:
+            new_deck = []
+            for card in self.deck:
+                if card.rank in restricted_deck:
+                    new_deck.append(card)
+            self.deck = new_deck
+
+        self.shuffle()
 # Done

@@ -30,7 +30,6 @@ class Env(object):
         self.active_player = None
         self.human_mode = False
 
-
     def init_game(self):
         ''' Start a new game
 
@@ -41,6 +40,7 @@ class Env(object):
                 (int): The begining player
         '''
         state, player_id = self.game.init_game()
+
         return self.extract_state(state), player_id
 
     def step(self, action):
@@ -227,6 +227,8 @@ class Env(object):
         trajectories = [[] for _ in range(self.player_num)]
         state, player_id = self.init_game()
 
+        starting_player = player_id
+
         # Loop to play the game
         trajectories[player_id].append(state)
         while not self.is_over():
@@ -259,6 +261,12 @@ class Env(object):
 
         # Reorganize the trajectories
         trajectories = reorganize(trajectories, payoffs)
+
+        if is_training == False:
+            try:
+                len(self.p)
+            except:
+                self.p = [0] * 4
 
         return trajectories, payoffs
 

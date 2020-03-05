@@ -1,7 +1,9 @@
-from rlcard.games.hearts.dealer import HeartsDealer as Dealer
+from rlcard.games.hearts.dealer import HeartsDealer
+from rlcard.games.hearts.dealer import HeartsMiniDealer
 from rlcard.games.hearts.player import HeartsPlayer as Player
 from rlcard.games.hearts.round import HeartsRound as Round
 from rlcard.games.hearts.utils import get_first_player
+import copy
 
 class HeartsGame(object):
 
@@ -11,6 +13,11 @@ class HeartsGame(object):
         self.num_players = 4
         self.payoffs = [0 for _ in range(self.num_players)]
         self.history = []
+
+        self.dealer_class = HeartsDealer
+        self.dealer = self.dealer_class()
+
+        self.deck_size = len(self.dealer.deck)
  
     def init_game(self):
         ''' Initialize players and state
@@ -25,7 +32,7 @@ class HeartsGame(object):
         self.payoffs = [0 for _ in range(self.num_players)]
 
         # Initialize a dealer that can deal cards
-        self.dealer = Dealer()
+        self.dealer = self.dealer_class()
 
         # Initialize four players to play the game
         self.players = [Player(i) for i in range(self.num_players)]
@@ -39,6 +46,8 @@ class HeartsGame(object):
 
         # Save the hisory for stepping back to the last state.
         self.history = []
+
+        self.card_played_in_game = []
 
         player_id = self.round.current_player
         state = self.get_state(player_id)
@@ -59,12 +68,20 @@ class HeartsGame(object):
 
         if self.allow_step_back:
             # First snapshot the current state
-            his_dealer = deepcopy(self.dealer)
-            his_round = deepcopy(self.round)
-            his_players = deepcopy(self.players)
+            his_dealer = copy.deepcopy(self.dealer)
+            his_round = copy.deepcopy(self.round)
+            his_players = copy.deepcopy(self.players)
             self.history.append((his_dealer, his_players, his_round))
 
         self.round.proceed_round(self.players, action)
+
+        if self.is_over():
+            if self.allow_step_back:
+                # First snapshot the current state
+                his_dealer = copy.deepcopy(self.dealer)
+                his_round = copy.deepcopy(self.round)
+                his_players = copy.deepcopy(self.players)
+                self.history.append((his_dealer, his_players, his_round))
 
         player_id = self.round.current_player
         state = self.get_state(player_id)
@@ -106,7 +123,7 @@ class HeartsGame(object):
                 if card.suit == 'H':
                     self.payoffs[idx] -= 1
                 elif (card.suit == 'S' and card.rank == 'Q'):
-                    self.payoffs[idx] -= 13
+                    self.payoffs[idx] -= (self.__class__.get_action_num() / 4)
             if self.shooting_the_moon_enabled:
                 if self.payoffs[idx] == -26: # Shooting the moon
                     self.payoffs[idx] = 0
@@ -157,6 +174,25 @@ class HeartsGame(object):
             (boolean): True if the game is over
         '''
         return self.round.is_over
+
+
+class HeartsMiniGame(HeartsGame):
+    def __init__(self, allow_step_back=False):
+        super().__init__(allow_step_back)
+        self.dealer_class = HeartsMiniDealer
+        self.dealer = self.dealer_class()
+
+    @staticmethod
+    def get_action_num():
+        ''' Return the number of applicable actions
+
+        Returns:
+            (int): The number of actions. There are 52 (size of deck) actions
+        '''
+        return 8
+
+
+
 # Done
 
 ## For test

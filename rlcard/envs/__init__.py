@@ -42,3 +42,8 @@ register(
     env_id='hearts',
     entry_point='rlcard.envs.hearts:HeartsEnv',
 )
+
+register(
+    env_id='heartsmini',
+    entry_point='rlcard.envs.hearts:HeartsMiniEnv',
+)

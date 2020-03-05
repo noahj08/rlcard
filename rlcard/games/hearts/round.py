@@ -49,7 +49,8 @@ class HeartsRound(object):
             last_player_in_round = self.current_player
             # Figure out who to give the cards to
             max_value = 2
-            max_player = 0
+            max_player = (last_player_in_round + 1) % self.num_players
+
             for idx, card in enumerate(self.played_cards):
                 # NOTE: since played cards array isn't in the same order as players
                 # we need to rotate indexes to locate correct player ID.
@@ -114,5 +115,11 @@ class HeartsRound(object):
         state['target'] = self.target_suit
         state['played_cards'] = [c.get_index() for c in self.played_cards]
         state['legal_actions'] = self.get_legal_actions(players, player_id)
+
+        collected = []
+        for player in players:
+            collected = collected + [c.get_index() for c in player.collected]
+        state['collected'] = collected
+
         #state['collected'] = [c.get_index() for c in player.collected] # For game debugging only (will increase state space)
         return state
