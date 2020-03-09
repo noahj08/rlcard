@@ -112,6 +112,9 @@ class HeartsEnv(Env):
         if self.actions[action_id] not in legal_actions:
             raise "Selected action is illegal!"
         return self.actions[action_id]
+    
+    def get_current_player(self):
+        return self.game.get_player_id()
 
 
 class HeartsMiniEnv(HeartsEnv):

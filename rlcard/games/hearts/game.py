@@ -143,7 +143,7 @@ class HeartsGame(object):
         return self.round.get_legal_actions(self.players, self.round.current_player)
 
     def get_player_num(self):
-        ''' Return the number of players in Limit Texas Hold'em
+        ''' Return the number of players in Hearts
 
         Returns:
             (int): The number of players in the game
@@ -173,7 +173,7 @@ class HeartsGame(object):
         Returns:
             (boolean): True if the game is over
         '''
-        return self.round.is_over
+        return self.round.isOver()
 
 
 class HeartsMiniGame(HeartsGame):
