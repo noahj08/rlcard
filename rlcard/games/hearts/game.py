@@ -173,7 +173,7 @@ class HeartsGame(object):
         Returns:
             (boolean): True if the game is over
         '''
-        return self.round.isOver()
+        return self.round.is_over
 
 
 class HeartsMiniGame(HeartsGame):

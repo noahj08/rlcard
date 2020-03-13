@@ -101,8 +101,8 @@ class HeartsRound(object):
                 legal_actions.append(card.get_index())
 
         return legal_actions
-        
-    def isOver(self):
+
+    def is_over(self):
         return (len(self.played_cards) == 52)
 
     def get_state(self, players, player_id):

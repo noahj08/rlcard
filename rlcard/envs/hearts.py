@@ -11,7 +11,7 @@ class HeartsEnv(Env):
     ''' Hearts Environment
     '''
 
-    def __init__(self, allow_step_back=False):
+    def __init__(self, allow_step_back=False, card2idx='games/hearts/card2index.json'):
         ''' Initialize the Hearts environment
         '''
         if not hasattr(self, 'game_class'):
@@ -32,7 +32,7 @@ class HeartsEnv(Env):
         deck_size = self.game.__class__.get_action_num()
         self.state_shape = [deck_size * 3]
 
-        with open(os.path.join(rlcard.__path__[0], 'games/hearts/card2index.json'), 'r') as file:
+        with open(os.path.join(rlcard.__path__[0], card2idx), 'r') as file:
             #self.card2index = json.load(file)
             card2index = {}
             for i, card in enumerate(self.game.dealer.deck):
@@ -46,6 +46,9 @@ class HeartsEnv(Env):
             encoded_action_list (list): return encoded legal action list (from str to int)
         '''
         return self.game.get_legal_actions()
+
+    def get_current_player(self):
+        return self.game.get_player_id()
 
     def extract_state(self, state):
         ''' Extract the state representation from state dictionary for agent
@@ -112,13 +115,10 @@ class HeartsEnv(Env):
         if self.actions[action_id] not in legal_actions:
             raise "Selected action is illegal!"
         return self.actions[action_id]
-    
-    def get_current_player(self):
-        return self.game.get_player_id()
 
 
 class HeartsMiniEnv(HeartsEnv):
     def __init__(self, allow_step_back=False):
         self.game_class = HeartsMiniGame
-        super(HeartsMiniEnv, self).__init__(allow_step_back)
+        super(HeartsMiniEnv, self).__init__(allow_step_back, 'games/hearts/card2indexmini.json')
 
